@@ -1,5 +1,11 @@
 # Micro and mini waits in JS
 
+Stage: 0
+
+Author: Shu-yu Guo
+
+Champion: Shu-yu Guo
+
 ## Motivation
 Efficient implementation of the locks use a loop body of the following shape for acquiring the lock:
 

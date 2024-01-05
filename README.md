@@ -48,15 +48,15 @@ For better spinning, add `Atomics.microwait(iterationNumber)`. It performs a fin
 
 Unlike `Atomics.wait`, since it does not block, it can be called from both the main thread and worker threads.
 
-Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture. The integer argument `iterationNumber` is a hint to implement a backoff algorithm if the microwait itself is in a loop. It defaults to `0`.
+Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture. The non-negative integer argument `iterationNumber` is a hint to implement a backoff algorithm if the microwait itself is in a loop. It defaults to `0`. `Atomics.microwait(n)` waits at most as long as `Atomics.microwait(n+1)`.
 
 ### `clampTimeoutIfCannotBlock`
 
 For sleeping on the main thread, add the `Atomics.wait(ta, index, value, timeout, { clampTimeoutIfCannotBlock: true }` overload. This overload clamps the timeout to an implementation-defined value if the executing thread cannot block.
 
-Calls to `Atomics.wait` with the `clampTimeoutIfCannotBlock` option set to `true` can be called on the main thread.
+`Atomics.wait` with the `clampTimeoutIfCannotBlock` option set to `true` can be called on the main thread.
 
-The option has no effect on threads because that can block.
+The option has no effect on worker threads because they can block.
 
 ### Open questions
 
@@ -85,4 +85,4 @@ No, except in very narrow cases. Indefinite blocks remain disallowed on the main
 
 ### Isn't this two separate proposals?
 
-Yes. The can be split into two independent proposals with no dependencies on each other.
+Sure. This can be split into two independent proposals with no dependencies on each other.

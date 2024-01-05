@@ -58,10 +58,14 @@ For sleeping on the main thread, add the `Atomics.wait(ta, index, value, timeout
 
 The option has no effect on worker threads because they can block.
 
-### Open questions
+#### How to clamp?
 
-- How should the maximum timeout value be determined on the main thread?
-- Should the maximum timeout value be static or dynamic (e.g., time left until the next animation frame)?
+Currently, I propose the timeout value be clamped to the time remaining until the next repaint. In other words, lined up with when `requestAnimationFrame` callbacks are fired.
+
+This is the main open question of this overload, and may benefit from use case studies.
+
+- Is lining up with rAF sufficiently useful?
+- Lining up with rAF means the maximum timeout value is dynamic. Should the maximum be a static value instead?
 
 ## Prior discussions and acknowledgements
 

@@ -60,12 +60,13 @@ The option has no effect on worker threads because they can block.
 
 #### How to clamp?
 
-Currently, I propose the timeout value be clamped to the time remaining until the next repaint. In other words, lined up with when `requestAnimationFrame` callbacks are fired.
+Currently, I propose the timeout value be clamped to the time remaining in the current "idle period". In other words, lined up with the deadline's remaining time inside `requestIdleCallback` callbacks.
 
 This is the main open question of this overload, and may benefit from use case studies.
 
-- Is lining up with rAF sufficiently useful?
-- Lining up with rAF means the maximum timeout value is dynamic. Should the maximum be a static value instead?
+- Is lining up with rIC sufficiently useful?
+- Lining up with rIC means the maximum timeout value is dynamic. Should the maximum be a static value instead?
+- What should the minimum timeout be? rIC has a maximum of 50ms, which seems reasonable, but no minimum. In our case, a minimum may be useful in that this overload is intended as a harm reduction alternative to a busy loop that does not yield.
 
 ## Prior discussions and acknowledgements
 

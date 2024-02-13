@@ -1,6 +1,6 @@
 # Micro and mini waits in JS
 
-Stage: 0
+Stage: 1
 
 Author: Shu-yu Guo
 

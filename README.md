@@ -1,4 +1,4 @@
-# Micro and mini waits in JS
+# Micro waits in JS
 
 Stage: 1
 
@@ -30,7 +30,7 @@ This algorithm is both fast when contention is low and efficient when contention
 
 `SpinForALittleBit()` is impossible to optimally write in JS, as the optimal version often requires hinting the CPU to allow sibling cores to access shared resources. On x86, for example, the [Intel optimization manual](https://www.intel.com/content/www/us/en/content-details/671488/intel-64-and-ia-32-architectures-optimization-reference-manual-volume-1.html) recommends a loop with the `pause` instruction and exponential backoff. Versions without this hinting suffer performance and scheduling issues.
 
-`PutThreadToSleepUntilLockReleased()` is impossible to optimally write on the main thread, as blocking is disallowed on the main thread as a policy choice to prevent deadlocks and hangs in the browser UI.
+`PutThreadToSleepUntilLockReleased()` is impossible to optimally write on the main thread, as blocking is disallowed on the main thread as a policy choice to prevent deadlocks and hangs in the browser UI. **This proposal does not seek to solve this use case**.
 
 ### Use case: Emscripten
 
@@ -40,7 +40,7 @@ Allowing microwaits will improve the power and scheduling efficiency of multithr
 
 ## Proposal
 
-I propose one new method on `Atomics` and a new overload of `Atomics.wait`.
+I propose one new method on `Atomics`.
 
 ### `Atomics.microwait`
 
@@ -49,24 +49,6 @@ For better spinning, add `Atomics.microwait(iterationNumber)`. It performs a fin
 Unlike `Atomics.wait`, since it does not block, it can be called from both the main thread and worker threads.
 
 Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture. The non-negative integer argument `iterationNumber` is a hint to implement a backoff algorithm if the microwait itself is in a loop. It defaults to `0`. `Atomics.microwait(n)` waits at most as long as `Atomics.microwait(n+1)`.
-
-### `clampTimeoutIfCannotBlock`
-
-For sleeping on the main thread, add the `Atomics.wait(ta, index, value, timeout, { clampTimeoutIfCannotBlock: true }` overload. This overload clamps the timeout to an implementation-defined value if the executing thread cannot block.
-
-`Atomics.wait` with the `clampTimeoutIfCannotBlock` option set to `true` can be called on the main thread.
-
-The option has no effect on worker threads because they can block.
-
-#### How to clamp?
-
-Currently, I propose the timeout value be clamped to the time remaining in the current "idle period". In other words, lined up with the deadline's remaining time inside `requestIdleCallback` callbacks.
-
-This is the main open question of this overload, and may benefit from use case studies.
-
-- Is lining up with rIC sufficiently useful?
-- Lining up with rIC means the maximum timeout value is dynamic. Should the maximum be a static value instead?
-- What should the minimum timeout be? rIC has a maximum of 50ms, which seems reasonable, but no minimum. In our case, a minimum may be useful in that this overload is intended as a harm reduction alternative to a busy loop that does not yield.
 
 ## Prior discussions and acknowledgements
 
@@ -80,14 +62,15 @@ Thread yields and efficient spin loops have also been discussed in the context o
 
 No. Microwaiting yields shared resources in a CPU without giving up occupancy of the core itself. Thread yielding is done at the OS level instead of the CPU level.
 
-### Isn't blocking the main thread bad? Why is this a clamped timeout okay?
+### Why can't I block the main thread?
 
-Yes. Blocking the main thread is bad because it has catastrophic effects on responsiveness and performance of web pages. However, blocking is still possible to emulate today by a naive spinlock, and a naive spinlock is much worse for power consumption and scheduling than a very small timed-out wait.
+Blocking the main thread is bad because it has catastrophic effects on responsiveness and performance of web pages.
 
-### Will this proposal let me write symmetric code for the main thread and workers?
+### I still want to block the main thread, can we clamp timeouts on `Atomics.wait`?
 
-No, except in very narrow cases. Indefinite blocks remain disallowed on the main thread. The main thread on the web platform remains special, and requires special handling, especially to [avoid deadlock](https://github.com/tc39/proposal-ecmascript-sharedmem/issues/100#issuecomment-220052785).
+Initially, this proposal included an overload of `Atomics.wait` that allowed the timeout value to be clamped to an implementation-defined limit on the main thread. The idea was that if the blocking periods were short enough and somehow lined up with what implementations considered "idle periods", then the policy choice of disallowing the main thread from being blocked would not be violated.
 
-### Isn't this two separate proposals?
+This overload was removed from the proposal for the following reasons:
 
-Sure. This can be split into two independent proposals with no dependencies on each other.
+- Not enough bang for the buck. There is no consensus to allow indefinite blocking on the main thread, and bounded-time blocking is of limited value for the use case.
+- It is difficult to specify _how_ to clamp the timeout in a web embedding. The previous idea was to tie it to the current "idle period", which is sensitive to scheduled tasks and the presence of event handlers responding to input, etc. However, this is mechanically complicated. Moreover, there is likely to be _no_ free idle periods in an application, which suggests we may need both a floor and a ceiling for the clamping. This further raises the specification challenge for the small gain.

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<pre class="metadata">
+title: Atomics.microwait
+stage: 1
+contributors: Shu-yu Guo
+markEffects: true
+</pre>
+
+<emu-clause id="Atomics.microwait">
+  <h1>Atomics.microwait ( [ _iterationNumber_ ] )</h1>
+  <p>This method performs the following steps when called:</p>
+  <emu-alg>
+    1. If _iterationNumber_ is not *undefined* and IsIntegralNumber(_iterationNumber_) is *false*, throw a *TypeError* exception.
+    1. Return *undefined*.
+  </emu-alg>
+  <emu-note>
+    <p>This method is designed for programs implementing spinlocks, such as those inside of mutexes, to provide a hint to the CPU that it is spinning while waiting on a value. It has no observable behaviour other than timing.</p>
+    <p>Implementations are expected to implement a pause or yield instruction if the best practices of the underlying architecture recommends such instructions in spin loops. For example, the <a href="https://www.intel.com/content/www/us/en/content-details/671488/intel-64-and-ia-32-architectures-optimization-reference-manual-volume-1.html">Intel Optimization Manual</a> recommends the <code>pause</code> instruction.</p>
+  </emu-note>
+  <emu-note>
+    <p>Due to the overhead of function calls, it is reasonable that an inlined call to this method in an optimizing compiler waits a different amount of time than an uninlined call.</p>
+  </emu-note>
+  <emu-note></emu-note>
+    <p>It is common practice for spin loops to have exponential backoff. For this purpose, _iterationNumber_ is a hint parameter. For integral numbers _N_, <code>`Atomics.microwait(N)</code> should wait at most as long as <code>`Atomics.microwait(N+1)</code>.</p>
+  </emu-note>
+</emu-clause>

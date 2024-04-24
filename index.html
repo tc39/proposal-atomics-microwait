@@ -1,6 +1,6 @@
 <!doctype html>
 <head><meta charset="utf-8">
-<title>Atomics.microwait</title><script src="ecmarkup.js?cache=hwYaHOj-" defer=""></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/styles/base16/solarized-light.min.css"><link rel="stylesheet" href="ecmarkup.css"></head><body><div id="shortcuts-help">
+<title>Atomics.pause</title><script src="ecmarkup.js?cache=729TqUAk" defer=""></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.0.1/styles/base16/solarized-light.min.css"><link rel="stylesheet" href="ecmarkup.css"></head><body><div id="shortcuts-help">
 <ul>
   <li><span>Toggle shortcuts help</span><code>?</code></li>
   <li><span>Toggle "can call user code" annotations</span><code>u</code></li>
@@ -9,10 +9,10 @@
 </ul></div><div id="menu-toggle"><svg xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%; stroke:currentColor" viewBox="0 0 120 120">
       <title>Menu</title>
       <path stroke-width="10" stroke-linecap="round" d="M30,60 h60  M30,30 m0,5 h60  M30,90 m0,-5 h60"></path>
-    </svg></div><div id="menu-spacer" class="menu-spacer"></div><div id="menu"><div id="menu-search"><input type="text" id="menu-search-box" placeholder="Search..."><div id="menu-search-results" class="inactive"></div></div><div id="menu-pins"><div class="menu-pane-header">Pins</div><ul id="menu-pins-list"></ul></div><div class="menu-pane-header">Table of Contents</div><div id="menu-toc"><ol class="toc"><li><span class="item-toggle-none"></span><a href="#Atomics.microwait" title="Atomics.microwait ( [ iterationNumber ] )"><span class="secnum">1</span> Atomics.microwait ( [ <var>iterationNumber</var> ] )</a></li><li><span class="item-toggle-none"></span><a href="#sec-copyright-and-software-license" title="Copyright &amp; Software License"><span class="secnum">A</span> Copyright &amp; Software License</a></li></ol></div></div><div id="spec-container"><h1 class="version">Stage 1 Draft / April 8, 2024</h1><h1 class="title">Atomics.microwait</h1>
+    </svg></div><div id="menu-spacer" class="menu-spacer"></div><div id="menu"><div id="menu-search"><input type="text" id="menu-search-box" placeholder="Search..."><div id="menu-search-results" class="inactive"></div></div><div id="menu-pins"><div class="menu-pane-header">Pins</div><ul id="menu-pins-list"></ul></div><div class="menu-pane-header">Table of Contents</div><div id="menu-toc"><ol class="toc"><li><span class="item-toggle-none"></span><a href="#Atomics.pause" title="Atomics.pause ( [ iterationNumber ] )"><span class="secnum">1</span> Atomics.pause ( [ <var>iterationNumber</var> ] )</a></li><li><span class="item-toggle-none"></span><a href="#sec-copyright-and-software-license" title="Copyright &amp; Software License"><span class="secnum">A</span> Copyright &amp; Software License</a></li></ol></div></div><div id="spec-container"><h1 class="version">Stage 1 Draft / April 24, 2024</h1><h1 class="title">Atomics.pause</h1>
 
-<emu-clause id="Atomics.microwait">
-  <h1><span class="secnum">1</span> Atomics.microwait ( [ <var>iterationNumber</var> ] )</h1>
+<emu-clause id="Atomics.pause">
+  <h1><span class="secnum">1</span> Atomics.pause ( [ <var>iterationNumber</var> ] )</h1>
   <p>This method performs the following steps when called:</p>
   <emu-alg><ol><li>If <var>iterationNumber</var> is not <emu-val>undefined</emu-val> and <emu-xref aoid="IsIntegralNumber"><a href="https://tc39.es/ecma262/#sec-isintegralnumber">IsIntegralNumber</a></emu-xref>(<var>iterationNumber</var>) is <emu-val>false</emu-val>, throw a <emu-val>TypeError</emu-val> exception.</li><li>Return <emu-val>undefined</emu-val>.</li></ol></emu-alg>
   <emu-note><span class="note">Note 1</span><div class="note-contents">
@@ -23,7 +23,7 @@
     <p>Due to the overhead of function calls, it is reasonable that an inlined call to this method in an optimizing compiler waits a different amount of time than an uninlined call.</p>
   </div></emu-note>
   <emu-note><span class="note">Note 3</span><div class="note-contents">
-    <p>It is common practice for spin loops to have exponential backoff. For this purpose, <var>iterationNumber</var> is a hint parameter. For integral numbers <var>N</var>, <code>`Atomics.microwait(N)</code> should wait at most as long as <code>`Atomics.microwait(N+1)</code>.</p>
+    <p>It is common practice for spin loops to have exponential backoff. For this purpose, <var>iterationNumber</var> is a hint parameter. For integral numbers <var>N</var>, <code>Atomics.pause(N)</code> should wait at most as long as <code>Atomics.pause(N+1)</code>.</p>
   </div></emu-note>
 </emu-clause><emu-annex id="sec-copyright-and-software-license">
       <h1><span class="secnum">A</span> Copyright &amp; Software License</h1>

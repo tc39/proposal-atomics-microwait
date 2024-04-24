@@ -1255,5 +1255,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 let sdoMap = JSON.parse(`{}`);
-let biblio = JSON.parse(`{"refsByClause":{},"entries":[{"type":"clause","id":"Atomics.microwait","title":"Atomics.microwait ( [ iterationNumber ] )","titleHTML":"Atomics.microwait ( [ <var>iterationNumber</var> ] )","number":"1"},{"type":"clause","id":"sec-copyright-and-software-license","title":"Copyright & Software License","titleHTML":"Copyright &amp; Software License","number":"A"}]}`);
+let biblio = JSON.parse(`{"refsByClause":{},"entries":[{"type":"clause","id":"Atomics.pause","title":"Atomics.pause ( [ iterationNumber ] )","titleHTML":"Atomics.pause ( [ <var>iterationNumber</var> ] )","number":"1"},{"type":"clause","id":"sec-copyright-and-software-license","title":"Copyright & Software License","titleHTML":"Copyright &amp; Software License","number":"A"}]}`);
 ;let usesMultipage = false

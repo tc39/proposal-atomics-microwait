@@ -42,23 +42,23 @@ Allowing microwaits will improve the power and scheduling efficiency of multithr
 
 I propose one new method on `Atomics`.
 
-### `Atomics.microwait`
+### `Atomics.pause`
 
-For better spinning, add `Atomics.microwait(iterationNumber)`. It performs a finite-time wait for a very short time that runtimes can implement with the appropriate CPU hinting. It has no observable behavior other than timing.
+For better spinning, add `Atomics.pause(iterationNumber)`. It performs a finite-time wait for a very short time that runtimes can implement with the appropriate CPU hinting. It has no observable behavior other than timing.
 
 Unlike `Atomics.wait`, since it does not block, it can be called from both the main thread and worker threads.
 
-Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture. The non-negative integer argument `iterationNumber` is a hint to implement a backoff algorithm if the microwait itself is in a loop. It defaults to `0`. `Atomics.microwait(n)` waits at most as long as `Atomics.microwait(n+1)`.
+Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture. The non-negative integer argument `iterationNumber` is a hint to implement a backoff algorithm if the microwait itself is in a loop. It defaults to `0`. `Atomics.pause(n)` waits at most as long as `Atomics.pause(n+1)`.
 
 ## Prior discussions and acknowledgements
 
-Microwaits have been discussed previously when SharedArrayBuffers were proposed. See https://github.com/tc39/proposal-ecmascript-sharedmem/issues/87. In my opinion, the arguments on that thread still hold today. `Atomics.microwait` is basically exactly the same as Lars's previous design.
+Microwaits have been discussed previously when SharedArrayBuffers were proposed. See https://github.com/tc39/proposal-ecmascript-sharedmem/issues/87. In my opinion, the arguments on that thread still hold today. `Atomics.pause` is basically exactly the same as Lars's previous design.
 
 Thread yields and efficient spin loops have also been discussed in the context of WebAssembly. See https://github.com/WebAssembly/threads/issues/15.
 
 ## FAQ
 
-### Does `Atomics.microwait()` yield execution to another thread?
+### Does `Atomics.pause()` yield execution to another thread?
 
 No. Microwaiting yields shared resources in a CPU without giving up occupancy of the core itself. Thread yielding is done at the OS level instead of the CPU level.
 

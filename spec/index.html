@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <pre class="metadata">
-title: Atomics.microwait
+title: Atomics.pause
 stage: 1
 contributors: Shu-yu Guo
 markEffects: true
 </pre>
 
-<emu-clause id="Atomics.microwait">
-  <h1>Atomics.microwait ( [ _iterationNumber_ ] )</h1>
+<emu-clause id="Atomics.pause">
+  <h1>Atomics.pause ( [ _iterationNumber_ ] )</h1>
   <p>This method performs the following steps when called:</p>
   <emu-alg>
     1. If _iterationNumber_ is not *undefined* and IsIntegralNumber(_iterationNumber_) is *false*, throw a *TypeError* exception.
@@ -22,6 +22,6 @@ markEffects: true
     <p>Due to the overhead of function calls, it is reasonable that an inlined call to this method in an optimizing compiler waits a different amount of time than an uninlined call.</p>
   </emu-note>
   <emu-note>
-    <p>It is common practice for spin loops to have exponential backoff. For this purpose, _iterationNumber_ is a hint parameter. For integral numbers _N_, <code>`Atomics.microwait(N)</code> should wait at most as long as <code>`Atomics.microwait(N+1)</code>.</p>
+    <p>It is common practice for spin loops to have exponential backoff. For this purpose, _iterationNumber_ is a hint parameter. For integral numbers _N_, <code>Atomics.pause(N)</code> should wait at most as long as <code>Atomics.pause(N+1)</code>.</p>
   </emu-note>
 </emu-clause>

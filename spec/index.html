@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <pre class="metadata">
 title: Atomics.pause
-stage: 1
+stage: 2.7
 contributors: Shu-yu Guo
 markEffects: true
 </pre>
@@ -13,7 +13,6 @@ markEffects: true
   <emu-alg>
     1. If _iterationNumber_ is not *undefined*, then
       1. If IsIntegralNumber(_iterationNumber_) is *false*, throw a *TypeError* exception.
-      1. If _iterationNumber_ is *-0*<sub>𝔽</sub>, throw a *RangeError* exception.
       1. If ℝ(_iterationNumber_) &lt; 0, throw a *RangeError* exception.
     1. Return *undefined*.
   </emu-alg>
@@ -25,6 +24,6 @@ markEffects: true
     <p>Due to the overhead of function calls, it is reasonable that an inlined call to this method in an optimizing compiler waits a different amount of time than an uninlined call.</p>
   </emu-note>
   <emu-note>
-    <p>It is common practice for spin loops to have exponential backoff. For this purpose, _iterationNumber_ is a hint parameter. For integral numbers _N_, <code>Atomics.pause(N)</code> should wait at most as long as <code>Atomics.pause(N+1)</code>.</p>
+    <p>It is common practice for spin loops to have backoff. For this purpose, _iterationNumber_ is a hint parameter. For integral numbers _N_, <code>Atomics.pause(N)</code> should wait at most as long as <code>Atomics.pause(N+1)</code>. The programmer is expected to linearly increase _iterationNumber_, but an implementation may choose to back off superlinearly.</p>
   </emu-note>
 </emu-clause>

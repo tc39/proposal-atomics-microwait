@@ -1,6 +1,6 @@
 # Micro waits in JS
 
-Stage: 1
+Stage: 2.7
 
 Author: Shu-yu Guo
 

@@ -20,10 +20,10 @@ markEffects: true
     <p>Implementations are expected to implement a pause or yield instruction if the best practices of the underlying architecture recommends such instructions in spin loops. For example, the <a href="https://www.intel.com/content/www/us/en/content-details/671488/intel-64-and-ia-32-architectures-optimization-reference-manual-volume-1.html">Intel Optimization Manual</a> recommends the <code>pause</code> instruction.</p>
   </emu-note>
   <emu-note>
-    <p>The _N_ parameter controls how long an implementation pauses. Larger values results in longer waits. Implementations are encouraged to have an internal upper bound on the maximum amount of time paused on the order of tens to hundreds of nanoseconds.</p>
+    <p>The _N_ parameter controls how long an implementation pauses. Larger values result in longer waits. Implementations are encouraged to have an internal upper bound on the maximum amount of time paused on the order of tens to hundreds of nanoseconds.</p>
     <p>The user, if passing the _N_ parameter, can use it to implement backoff strategies. For backoff strategies where subsequent waits become longer, linear backoff can be implemented by passing linearly increasing values for non-negative _N_; exponential backoff can be implemented by exponentially increasing values for non-negative _N_, and so on. For backoff strategies where subsequent waits become shorter, linear backoff can be implemented by passing linearly decreasing values for negative _N_; exponential backoff where subsequent waits become longer can be implemented by exponentially decreasing values for negative _N_, and so on.</p>
   </emu-note>
   <emu-note>
-    <p>Due to the overhead of function calls, it is reasonable that an inlined call to this method in an optimizing compiler waits a different amount of time than an uninlined call.</p>
+    <p>Due to the overhead of function calls, it is reasonable that an inlined call to this method in an optimizing compiler waits a different amount of time than a non-inlined call.</p>
   </emu-note>
 </emu-clause>

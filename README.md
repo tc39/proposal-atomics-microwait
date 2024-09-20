@@ -44,11 +44,11 @@ I propose one new method on `Atomics`.
 
 ### `Atomics.pause`
 
-For better spinning, add `Atomics.pause(iterationNumber)`. It performs a finite-time wait for a very short time that runtimes can implement with the appropriate CPU hinting. It has no observable behavior other than timing.
+For better spinning, add `Atomics.pause(N)`. It performs a finite-time wait for a very short time that runtimes can implement with the appropriate CPU hinting. It has no observable behavior other than timing.
 
 Unlike `Atomics.wait`, since it does not block, it can be called from both the main thread and worker threads.
 
-Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture. The non-negative integer argument `iterationNumber` is a hint to implement a backoff algorithm if the microwait itself is in a loop. It defaults to `0`. `Atomics.pause(n)` waits at most as long as `Atomics.pause(n+1)`.
+Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture. The non-negative integer argument `N` controls the pause time, with larger values of `N` pausing for longer. It can be used to implement backoff algorithms when the microwait itself is in a loop.
 
 ## Prior discussions and acknowledgements
 

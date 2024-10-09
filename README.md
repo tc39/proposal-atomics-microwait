@@ -48,7 +48,7 @@ For better spinning, add `Atomics.pause(N)`. It performs a finite-time wait for 
 
 Unlike `Atomics.wait`, since it does not block, it can be called from both the main thread and worker threads.
 
-Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture. The non-negative integer argument `N` controls the pause time, with larger values of `N` pausing for longer. It can be used to implement backoff algorithms when the microwait itself is in a loop.
+Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture. The integer argument `N` controls the pause time, with larger values of `N` pausing for longer. It can be used to implement backoff algorithms when the microwait itself is in a loop.
 
 ## Prior discussions and acknowledgements
 

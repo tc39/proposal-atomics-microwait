@@ -12,7 +12,7 @@ markEffects: true
   <p>This method performs the following steps when called:</p>
   <emu-alg>
     1. If _N_ is neither *undefined* nor an integral Number, throw a *TypeError* exception.
-    1. If the execution environment of the ECMAScript implementation supports signaling to the operating system or CPU that the current executing code is in a spin-wait loop, such as executing a `pause` CPU instruction, send that signal. When _N_ is not *undefined*, it determines the number of times that signal is sent. The number of times the signal is sent for an integral Number _N_ is less than or equal to the number times it is sent for _N_ + 1 if both _N_ and _N_ + 1 have the same sign.
+    1. If the execution environment of the ECMAScript implementation supports signaling to the operating system or CPU that the current executing code is in a spin-wait loop, such as executing a `pause` CPU instruction, send that signal. When _N_ is not *undefined*, it determines the number of times that signal is sent. The number of times the signal is sent for an integral Number _N_ is less than or equal to the number times it is sent for _N_ + 1 if both _N_, _N_ + 1 have the same sign, and neither _N_ nor _N_ + 1 is 0.
     1. Return *undefined*.
   </emu-alg>
   <emu-note>
@@ -22,6 +22,7 @@ markEffects: true
   <emu-note>
     <p>The _N_ parameter controls how long an implementation pauses. Larger values result in longer waits. Implementations are encouraged to have an internal upper bound on the maximum amount of time paused on the order of tens to hundreds of nanoseconds.</p>
     <p>The user, if passing the _N_ parameter, can use it to implement backoff strategies. For backoff strategies where subsequent waits become longer, linear backoff can be implemented by passing linearly increasing values for non-negative _N_; exponential backoff can be implemented by exponentially increasing values for non-negative _N_, and so on. For backoff strategies where subsequent waits become shorter, linear backoff can be implemented by passing linearly decreasing values for negative _N_; exponential backoff where subsequent waits become longer can be implemented by exponentially decreasing values for negative _N_, and so on.</p>
+    <p>The pause time when _N_ is 0 is neither specified to be smaller than when _N_ is 1, nor to be larger than when _N_ is -1. The rationale is 0 can be a starting point for both backoff strategies where subsequent waits become longer and those where subsequent waits become shorter, making it ambiguous.</p>
   </emu-note>
   <emu-note>
     <p>Due to the overhead of function calls, it is reasonable that an inlined call to this method in an optimizing compiler waits a different amount of time than a non-inlined call.</p>

@@ -44,11 +44,11 @@ I propose one new method on `Atomics`.
 
 ### `Atomics.pause`
 
-For better spinning, add `Atomics.pause(N)`. It performs a finite-time wait for a very short time that runtimes can implement with the appropriate CPU hinting. It has no observable behavior other than timing.
+For better spinning, add `Atomics.pause()`. It performs a finite-time wait for a very short time that runtimes can implement with the appropriate CPU hinting. It has no observable behavior other than timing.
 
 Unlike `Atomics.wait`, since it does not block, it can be called from both the main thread and worker threads.
 
-Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture. The non-negative integer argument `N` controls the pause time, with larger values of `N` pausing for longer. It can be used to implement backoff algorithms when the microwait itself is in a loop.
+Implementations are expected to implement a short spin with CPU yielding, using best practices for the underlying architecture.
 
 ## Prior discussions and acknowledgements
 
@@ -74,3 +74,12 @@ This overload was removed from the proposal for the following reasons:
 
 - Not enough bang for the buck. There is no consensus to allow indefinite blocking on the main thread, and bounded-time blocking is of limited value for the use case.
 - It is difficult to specify _how_ to clamp the timeout in a web embedding. The previous idea was to tie it to the current "idle period", which is sensitive to scheduled tasks and the presence of event handlers responding to input, etc. However, this is mechanically complicated. Moreover, there is likely to be _no_ free idle periods in an application, which suggests we may need both a floor and a ceiling for the clamping. This further raises the specification challenge for the small gain.
+
+### Why doesn't `Atomics.pause` take an optional argument?
+
+Initially, this proposal included an optional integer parameter `N` that controlled the pause time, with larger values of `N` pausing for longer. The idea was that it could be used to implement backoff strategies when the microwait itself was in a loop.
+
+This parameter was removed from the proposal for the following reasons:
+
+- No implementation was making use of it. Shipping implementations accepted the argument but did not vary the pause duration based on it, so the parameter provided no observable benefit to user code.
+- Shipping an unused parameter risks future "performance compatibility" constraints. If JS code in the wild passed values for `N` without testing the effect, an implementation that later chose to respect the parameter could regress the performance of such code.
